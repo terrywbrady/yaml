@@ -1,0 +1,5 @@
+info: &info
+  legs: 4 legs
+  type: pet
+dog: *info
+cat: *info  
