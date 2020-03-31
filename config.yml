@@ -1,128 +1,55 @@
-release-repo: git@github.com:CDLUC3/mrt-doc.git
-repositories:
-  - repo: git@github.com:CDLUC3/mrt-dashboard.git
-  - repo: git@github.com:CDLUC3/tomcat8_catalina_base.git
-    branches:
-    - mrt-audit-stg
-    - mrt-audit01-prd
-    - mrt-audit02-prd
-    - mrt-audit03-prd
-    - mrt-audit04-prd
-    - mrt-dataone-prd
-    - mrt-dataone-stg
-    - mrt-feeder-prd
-    - mrt-feeder-stg
-    - mrt-ingest-local
-    - mrt-ingest01-prd
-    - mrt-ingest01-stg
-    - mrt-ingest01x2-prd
-    - mrt-ingest01x2-stg
-    - mrt-ingest02-prd
-    - mrt-ingest02-stg
-    - mrt-ingest02x2-prd
-    - mrt-ingest02x2-stg
-    - mrt-ingest03-prd
-    - mrt-ingest03x2-prd
-    - mrt-inv-prd
-    - mrt-inv-stg
-    - mrt-inv01-prd
-    - mrt-inv01-stg
-    - mrt-inv01x2-prd
-    - mrt-inv01x2-stg
-    - mrt-inv02-prd
-    - mrt-inv02-stg
-    - mrt-inv02x2-prd
-    - mrt-inv02x2-stg
-    - mrt-node-stg
-    - mrt-node01-prd
-    - mrt-oai-prd
-    - mrt-oai-stg
-    - mrt-replic-dev
-    - mrt-replic-prd
-    - mrt-replic-stg
-    - mrt-replic01-prd
-    - mrt-replic02-prd
-    - mrt-replic03-prd
-    - mrt-replic04-prd
-    - mrt-replic05-prd
-    - mrt-store-prd
-    - mrt-store-stg
-    - mrt-store01-prd
-    - mrt-store01-stg
-    - mrt-store02-prd
-    - mrt-store02-stg
-    - mrt-storeAudit-stg
-    - mrt-storeAudit01-prd
-    - mrt-storeAudit02-prd
-    - mrt-storeAudit03-prd
-    - mrt-storeAudit04-prd
-    - mrt-sword-prd
-    - mrt-sword-stg
-  - repo: git@github.com:CDLUC3/mrt-tomcat.git
-  - repo: git@github.com:CDLUC3/uc3-etds.git
-  - repo: git@github.com:CDLUC3/mrt-inventory.git
-  - repo: git@github.com:CDLUC3/merritt-docker.git
-  - repo: git@github.com:CDLUC3/mrt-ingest.git
-  - repo: git@github.com:CDLUC3/mrt-doc.git
-  - repo: git@github.com:CDLUC3/mrt-sword.git
-  - repo: git@github.com:CDLUC3/mrt-oai.git
-  - repo: git@github.com:CDLUC3/mrt-audit.git
-  - repo: git@github.com:CDLUC3/mrt-replic.git
-  - repo: git@github.com:CDLUC3/mrt-store.git
-  - repo: git@github.com:CDLUC3/mrt-cloud.git
-  - repo: git@github.com:CDLUC3/mrt-zoo.git
-  - repo: git@github.com:CDLUC3/mrt-core2.git
-  - repo: git@github.com:CDLUC3/cdl-zk-queue.git
-  # Mark verified the following are Needed
-  - repo: git@github.com:CDLUC3/mrt-jenkins-docker.git
-  - repo: git@github.com:CDLUC3/mrt-ingest-ruby.git
-  - repo: git@github.com:CDLUC3/mrt-dataONE.git
-  # David confirmed that these are needed
-  - repo: git@github.com:CDLUC3/mrt-store-admin.git
-  - repo: git@github.com:CDLUC3/mrt-store-config.git
-  - repo: git@github.com:CDLUC3/mrt-tind-harvester.git
-  - repo: git@github.com:CDLUC3/mrt-cloudhost-pub.git
-  - repo: git@github.com:CDLUC3/merritt-manifest.git
-  # Merritt configuration repos
-  - repo: git@github.com:cdlib/mrt-ingest-profile.git
-    branches:
-    - production
-    - stage
-  - repo: git@github.com:cdlib/mrt-dashboard-config.git
-  - repo: git@github.com:cdlib/merritt-docker-prv.git
-  - repo: git@github.com:cdlib/mrt-conf-prv.git
-sprint-template: >
-  ## Major accomplishments:
-
-deploy-template: >
-  ## Service(s)
-
-
-  ## Servers affected
-
-
-  ## Change Description
-
-
-  ## Github issue
-
-  Link(s)
-  -
-
-  ## Source Code:
-
-  Link(s) to tagged release(s)
-  -
-
-  ## Infrastructure Changes to support software (ALB, EFS, etc)
-
-
-  ## Jenkins: (if applicable)
-
-  ### Build name/number
-
-  ### Build URL
-
-
-  ## Upgrade Steps (if applicable)
-  - [ ] Action Step 1
+# Simplified node table structure for testing parser
+data: &can-info
+  can-info:
+    verifyOnRead: true
+    verifyOnWrite: true
+services:
+  aws-near: &aws-near
+    type: aws-near
+    service-properties:
+      serviceType: aws
+      accessMode: near-line
+      region: us-west-2
+  aws-std: &aws-std
+    type: aws-std
+    service-properties:
+      serviceType: aws
+      accessMode: on-line
+      storageClass: Standard
+      region: us-west-2
+  minio: &minio
+    type: minio
+    service-properties:
+      serviceType: minio
+      endPoint: "{!ENV: minio-endpoint}"
+      accessKey: "{!SSM: minio-accessKey}"
+      secretKey: "{!SSM: minio-secretKey}"
+environments:
+  production:
+    nodes:
+      - &naws
+        # AWS Standard
+        identifier: 100
+        <<: *aws-std
+        bucket: aws-prod
+        <<: *can-info
+      - &nglacier
+        # AWS Glacier
+        identifier: 200
+        <<: *aws-near
+        bucket: glacier-prod
+        <<: *can-info
+      - &nminio
+        # Minio
+        identifier: 300
+        <<: *minio
+        bucket: minio-prod
+        <<: *can-info
+  stage:
+    nodes:
+      - <<: *naws
+        bucket: aws-stg
+      - <<: *nglacier
+        bucket: glacier-stg
+      - <<: *nminio
+        bucket: glacier-stg
