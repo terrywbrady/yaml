@@ -21,7 +21,7 @@ services:
     type: minio
     service-properties:
       serviceType: minio
-      endPoint: "{!ENV: minio-endpoint}"
+      endPoint: "{!ENV: minio_endpoint}"
       accessKey: "{!SSM: minio-accessKey}"
       secretKey: "{!SSM: minio-secretKey}"
 environments:
