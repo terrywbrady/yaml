@@ -12,6 +12,8 @@
 No dashes in environment variable names!
 
 ## AWS EC2 Setup
+_Note: Choose a security group that limits SSH access to the VPN_
+
 ```
 sudo yum install java-1.8.0-openjdk
 sudo yum install maven
